@@ -23,7 +23,7 @@ int PCA9685::init()
 	printf("PCA9685 Init...\n");
 	if(!bcm2835_i2c_begin())
 	{
-		printf("bcm2835_i2c_begin failed\n");
+		printf("bcm2835_i2c_begin failed at %s%d\n",__FILE__,__LINE__);
 		return 0;
 	}
 	bcm2835_i2c_setSlaveAddress(_addr);
@@ -39,7 +39,7 @@ int PCA9685::init()
 	sendBuf[0] = PCA9685_MODE1;
 	if((errCode = bcm2835_i2c_read_register_rs(sendBuf,&oldmode,1)))
 	{
-		printf("bcm2835_i2c_read_register_rs failed, errCode = 0x%x\n", errCode);
+		printf("bcm2835_i2c_read_register_rs failed at %s%d, errCode = 0x%x\n",__FILE__,__LINE__,errCode);
 		return 0;
 	}
 	//oldmode = wiringPiI2CReadReg8(_pcaFd, PCA9685_MODE1);
@@ -49,7 +49,7 @@ int PCA9685::init()
 	sendBuf[1] = newmode;
 	if((errCode = bcm2835_i2c_write(sendBuf,2)))
 	{
-		printf("bcm2835_i2c_write failed, errCode = 0x%x\n", errCode);
+		printf("bcm2835_i2c_write failed at %s%d, errCode = 0x%x\n",__FILE__,__LINE__,errCode);
 		return 0;
 	}
 
@@ -66,7 +66,7 @@ int PCA9685::init()
 	sendBuf[1] = oldmode;
 	if((errCode = bcm2835_i2c_write(sendBuf,2)))
 	{
-		printf("bcm2835_i2c_write failed, errCode = 0x%x\n", errCode);
+		printf("bcm2835_i2c_write failed at %s%d, errCode = 0x%x\n",__FILE__,__LINE__, errCode);
 		return 0;
 	}
 
@@ -74,7 +74,7 @@ int PCA9685::init()
 	sendBuf[1] = oldmode | 0xa1;
 	if((errCode = bcm2835_i2c_write(sendBuf,2)))
 	{
-		printf("bcm2835_i2c_write failed, errCode = 0x%x\n", errCode);
+		printf("bcm2835_i2c_write failed at %s%d, errCode = 0x%x\n",__FILE__,__LINE__, errCode);
 		return 0;
 	}
 	
@@ -98,13 +98,13 @@ void PCA9685::setPWM(uint8_t channel, uint32_t pulseWidth)
 	sendBuf[1] = ON & 0x00FF;
 	sendBuf[2] = ON & 0x00FF;
 	if((errCode = bcm2835_i2c_write(sendBuf,3)))
-		printf("bcm2835_i2c_write failed, errCode = 0x%x\n", errCode);	
+		printf("bcm2835_i2c_write failed at %s%d, errCode = 0x%x\n",__FILE__,__LINE__, errCode);	
 
 	sendBuf[0] = LED0_OFF_L+4*channel;
 	sendBuf[1] = OFF & 0x00FF;
 	sendBuf[2] = OFF >> 8;
 	if((errCode = bcm2835_i2c_write(sendBuf,3)))
-		printf("bcm2835_i2c_write failed, errCode = 0x%x\n", errCode);
+		printf("bcm2835_i2c_write failed at %s%d, errCode = 0x%x\n",__FILE__,__LINE__, errCode);
 
 }
 
