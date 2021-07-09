@@ -12,7 +12,6 @@ PCA9685::PCA9685(uint8_t addr)
 PCA9685::~PCA9685()
 {
 	bcm2835_i2c_end();
-	bcm2835_close();
 }
 
 /**
@@ -48,9 +47,10 @@ void PCA9685::setPWMFreq(float freq)
 	uint8_t newmode = (oldmode&0x7f) | 0x10; //准备进入sleep，设置时钟前必须先进入sleep模式
 	write8(PCA9685_MODE1, newmode); // go to sleep
 	write8(PCA9685_PRESCALE, prescale); // set the prescaler
+	oldmode &= 0xef;
 	write8(PCA9685_MODE1, oldmode);
-	delay(5);
-	write8(PCA9685_MODE1, oldmode | 0xa0);  //  This sets the MODE1 register to turn on auto increment.
+	delay(2);
+	write8(PCA9685_MODE1, (oldmode|0xa1));  //  This sets the MODE1 register to turn on auto increment.
 }
 
 /**
@@ -60,7 +60,7 @@ void PCA9685::setPWMFreq(float freq)
  **/
 void PCA9685::setPWM(uint8_t channel, uint32_t pulseWidth)
 {
-	uint16_t off = static_cast<uint16_t> ((pulseWidth/_T * 4096)*1.01); //最后的1.01是校准用的
+	uint16_t off = static_cast<uint16_t> ((pulseWidth* 4096.0/_T )*1.01); //最后的1.01是校准用的
 	setPWM(channel,0,off);
 }
 
